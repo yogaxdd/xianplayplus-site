@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search | XianPlay+</title>
+    <meta name="description" content="Cari drama China favorit kamu di XianPlay+">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header header--solid" id="header">
+        <div class="header__inner">
+            <a href="index.html" class="header__logo">XianPlay+</a>
+
+            <nav class="header__nav">
+                <a href="index.html" class="header__nav-link">Home</a>
+                <a href="#categories" class="header__nav-link">Categories</a>
+                <a href="mylist.html" class="header__nav-link">My List</a>
+            </nav>
+
+            <div class="header__actions">
+                <a href="search.html" class="header__icon-btn header__nav-link--active" aria-label="Search">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                </a>
+                <button class="header__icon-btn header__menu-btn" aria-label="Menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search Page -->
+    <main class="search-page">
+        <div class="container">
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <span class="search-bar__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                </span>
+                <input type="text" class="search-bar__input" id="searchInput"
+                    placeholder="Cari drama, aktor, atau genre..." autofocus>
+            </div>
+
+            <!-- Search Results -->
+            <div id="searchResults">
+                <!-- Popular Searches (Default State) -->
+                <div class="section" style="padding-top: 0;" id="popularSection">
+                    <div class="section-header">
+                        <h2 class="section-title">🔥 Pencarian Populer</h2>
+                    </div>
+                    <div class="tags" style="gap: 12px;">
+                        <button class="tag" data-search="Romance">Romance</button>
+                        <button class="tag" data-search="Wuxia">Wuxia</button>
+                        <button class="tag" data-search="Historical">Historical</button>
+                        <button class="tag" data-search="Fantasy">Fantasy</button>
+                        <button class="tag" data-search="Modern">Modern</button>
+                        <button class="tag" data-search="Thriller">Thriller</button>
+                        <button class="tag" data-search="Youth">Youth</button>
+                        <button class="tag" data-search="Comedy">Comedy</button>
+                    </div>
+                </div>
+
+                <!-- Results Grid -->
+                <div class="section" style="padding-top: var(--space-lg);" id="resultsSection">
+                    <div class="section-header" id="resultsHeader" style="display: none;">
+                        <h2 class="section-title">Hasil Pencarian</h2>
+                        <span class="text-muted" id="resultsCount"></span>
+                    </div>
+
+                    <div class="cards-grid" id="resultsGrid">
+                        <!-- Results will be populated by JavaScript -->
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="search-empty" id="emptyState" style="display: none;">
+                        <svg class="search-empty__icon" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                        </svg>
+                        <h3 class="search-empty__title">Tidak Ditemukan</h3>
+                        <p class="search-empty__text">Coba kata kunci lain atau jelajahi kategori populer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__inner">
+                <a href="index.html" class="footer__logo">XianPlay+</a>
+                <nav class="footer__links">
+                    <a href="#" class="footer__link">About</a>
+                    <a href="#" class="footer__link">Terms of Service</a>
+                    <a href="#" class="footer__link">Privacy Policy</a>
+                    <a href="#" class="footer__link">Contact</a>
+                </nav>
+                <p class="footer__copyright">© 2024 XianPlay+. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Mock data for search demonstration
+        const mockDramas = [
+            { title: "Hidden Love", episodes: 25, genre: "Romance", image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&q=80" },
+            { title: "Love Like The Galaxy", episodes: 56, genre: "Romance", image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&q=80" },
+            { title: "The Untamed", episodes: 50, genre: "Fantasy", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80" },
+            { title: "Word of Honor", episodes: 36, genre: "Wuxia", image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&q=80" },
+            { title: "Nirvana in Fire", episodes: 54, genre: "Historical", image: "https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=400&q=80" },
+            { title: "The Double", episodes: 40, genre: "Historical", image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80" },
+            { title: "Joy of Life S2", episodes: 36, genre: "Historical", image: "https://images.unsplash.com/photo-1506863530036-1efeddceb993?w=400&q=80" },
+            { title: "Reset", episodes: 15, genre: "Thriller", image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&q=80" },
+        ];
+
+        const searchInput = document.getElementById('searchInput');
+        const popularSection = document.getElementById('popularSection');
+        const resultsHeader = document.getElementById('resultsHeader');
+        const resultsGrid = document.getElementById('resultsGrid');
+        const resultsCount = document.getElementById('resultsCount');
+        const emptyState = document.getElementById('emptyState');
+
+        function createDramaCard(drama) {
+            return `
+        <article class="drama-card" onclick="window.location.href='detail.html'">
+          <div class="drama-card__poster">
+            <img src="${drama.image}" alt="${drama.title}" class="drama-card__image">
+            <div class="drama-card__play">
+              <span class="drama-card__play-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path fill-rule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clip-rule="evenodd" />
+                </svg>
+              </span>
+            </div>
+          </div>
+          <div class="drama-card__info">
+            <h3 class="drama-card__title">${drama.title}</h3>
+            <p class="drama-card__meta">${drama.episodes} Eps • ${drama.genre}</p>
+          </div>
+        </article>
+      `;
+        }
+
+        function performSearch(query) {
+            const normalizedQuery = query.toLowerCase().trim();
+
+            if (!normalizedQuery) {
+                popularSection.style.display = 'block';
+                resultsHeader.style.display = 'none';
+                resultsGrid.innerHTML = '';
+                emptyState.style.display = 'none';
+                return;
+            }
+
+            popularSection.style.display = 'none';
+
+            const results = mockDramas.filter(drama =>
+                drama.title.toLowerCase().includes(normalizedQuery) ||
+                drama.genre.toLowerCase().includes(normalizedQuery)
+            );
+
+            if (results.length > 0) {
+                resultsHeader.style.display = 'flex';
+                resultsCount.textContent = `${results.length} drama`;
+                resultsGrid.innerHTML = results.map(createDramaCard).join('');
+                emptyState.style.display = 'none';
+            } else {
+                resultsHeader.style.display = 'none';
+                resultsGrid.innerHTML = '';
+                emptyState.style.display = 'block';
+            }
+        }
+
+        // Search input handler
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                performSearch(e.target.value);
+            }, 300);
+        });
+
+        // Tag click handlers
+        document.querySelectorAll('.tag[data-search]').forEach(tag => {
+            tag.addEventListener('click', () => {
+                searchInput.value = tag.dataset.search;
+                performSearch(tag.dataset.search);
+            });
+        });
+    </script>
+</body>
+
+</html>
