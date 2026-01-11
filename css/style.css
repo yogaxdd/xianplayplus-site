@@ -10,22 +10,22 @@
   --bg-secondary: #111114;
   --bg-card: #151518;
   --bg-hover: #1A1A1E;
-  
+
   --accent-gold: #C9A24D;
   --accent-gold-dim: #A88A3D;
   --accent-jade: #3FAF8F;
-  
+
   --text-primary: #FFFFFF;
   --text-secondary: #B3B3B3;
   --text-muted: #6B6B6B;
-  
+
   --divider: #1F1F1F;
   --border-subtle: #2A2A2E;
-  
+
   /* Typography */
   --font-display: 'Playfair Display', 'Cinzel', Georgia, serif;
   --font-body: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-  
+
   /* Spacing */
   --space-xs: 4px;
   --space-sm: 8px;
@@ -34,24 +34,26 @@
   --space-xl: 32px;
   --space-2xl: 48px;
   --space-3xl: 64px;
-  
+
   /* Layout */
   --container-max: 1400px;
   --header-height: 64px;
   --card-ratio: 150%;
-  
+
   /* Transitions */
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
   --transition-slow: 400ms ease;
-  
+
   /* Shadows */
   --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
   --shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
 
 /* ============== Reset & Base ============== */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -90,7 +92,8 @@ img {
   height: auto;
 }
 
-ul, ol {
+ul,
+ol {
   list-style: none;
 }
 
@@ -277,7 +280,7 @@ ul, ol {
   .header__nav {
     display: none;
   }
-  
+
   .header__menu-btn {
     display: flex;
   }
@@ -311,13 +314,11 @@ ul, ol {
 .hero__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(11, 11, 13, 0.3) 0%,
-    rgba(11, 11, 13, 0.5) 50%,
-    rgba(11, 11, 13, 0.95) 85%,
-    var(--bg-primary) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(11, 11, 13, 0.3) 0%,
+      rgba(11, 11, 13, 0.5) 50%,
+      rgba(11, 11, 13, 0.95) 85%,
+      var(--bg-primary) 100%);
 }
 
 .hero__content {
@@ -610,18 +611,23 @@ ul, ol {
 
 .drama-card__rank {
   font-family: var(--font-display);
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
   color: var(--accent-gold);
   line-height: 1;
-  min-width: 40px;
+  min-width: 32px;
   text-align: center;
   opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.drama-card--ranked .drama-card__content {
+  flex: 1;
+  min-width: 0;
 }
 
 .drama-card--ranked .drama-card__poster {
-  width: 100px;
-  flex-shrink: 0;
+  width: 100%;
 }
 
 /* ============== Tags/Chips ============== */
@@ -832,12 +838,10 @@ ul, ol {
 .detail-hero__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(11, 11, 13, 0.4) 0%,
-    rgba(11, 11, 13, 0.7) 50%,
-    var(--bg-primary) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(11, 11, 13, 0.4) 0%,
+      rgba(11, 11, 13, 0.7) 50%,
+      var(--bg-primary) 100%);
 }
 
 .detail-content {
@@ -982,7 +986,7 @@ ul, ol {
   display: flex;
   align-items: center;
   padding: 0 var(--space-lg);
-  background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
   z-index: 100;
   opacity: 1;
   transition: opacity var(--transition-base);
@@ -1046,7 +1050,7 @@ ul, ol {
   left: 0;
   right: 0;
   padding: var(--space-xl) var(--space-lg);
-  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
   opacity: 1;
   transition: opacity var(--transition-base);
 }
@@ -1309,6 +1313,7 @@ ul, ol {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -1319,6 +1324,7 @@ ul, ol {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1335,12 +1341,10 @@ ul, ol {
 
 /* ============== Loading Skeleton ============== */
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--bg-card) 25%,
-    var(--bg-hover) 50%,
-    var(--bg-card) 75%
-  );
+  background: linear-gradient(90deg,
+      var(--bg-card) 25%,
+      var(--bg-hover) 50%,
+      var(--bg-card) 75%);
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s infinite;
 }
@@ -1349,6 +1353,7 @@ ul, ol {
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }
