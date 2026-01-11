@@ -12,147 +12,76 @@
         rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <style>
+        :root {
+            --sidebar-width: 320px;
+        }
+
         body {
             background: #000;
             overflow: hidden;
         }
 
-        .player-wrapper {
-            position: relative;
-            width: 100%;
-            height: 100vh;
+        /* Main Layout - Split View */
+        .player-layout {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            height: 100vh;
+            padding-top: 60px;
         }
 
-        .player-video {
-            width: 100%;
+        /* Left Sidebar - Episodes */
+        .episodes-panel {
+            width: var(--sidebar-width);
             height: 100%;
-            object-fit: contain;
-            background: #000;
-        }
-
-        .player-overlay {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            transition: opacity .3s;
-        }
-
-        .player-overlay--hidden {
-            opacity: 0;
-        }
-
-        .player-overlay__top {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 120px;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, .8), transparent);
-        }
-
-        .player-overlay__bottom {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 150px;
-            background: linear-gradient(to top, rgba(0, 0, 0, .9), transparent);
-        }
-
-        .player-center-play {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--divider);
             display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(201, 162, 77, .9);
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all .2s;
-            z-index: 10;
+            flex-direction: column;
+            flex-shrink: 0;
         }
 
-        .player-center-play:hover {
-            transform: translate(-50%, -50%) scale(1.1);
-        }
-
-        .player-center-play svg {
-            width: 36px;
-            height: 36px;
-            color: #000;
-            margin-left: 4px;
-        }
-
-        .player-center-play--hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .episodes-sidebar {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 360px;
-            height: 100vh;
-            background: rgba(11, 11, 13, .98);
-            border-left: 1px solid var(--divider);
-            transform: translateX(100%);
-            transition: transform .3s;
-            z-index: 200;
-            overflow-y: auto;
-        }
-
-        .episodes-sidebar--open {
-            transform: translateX(0);
-        }
-
-        .episodes-sidebar__header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .episodes-panel__header {
             padding: var(--space-lg);
             border-bottom: 1px solid var(--divider);
-            position: sticky;
-            top: 0;
-            background: rgba(11, 11, 13, .98);
         }
 
-        .episodes-sidebar__title {
+        .episodes-panel__title {
             font-family: var(--font-display);
-            font-size: 1.25rem;
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: var(--space-xs);
         }
 
-        .episodes-sidebar__close {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            color: var(--text-secondary);
-            cursor: pointer;
-        }
-
-        .episodes-sidebar__close:hover {
-            background: var(--bg-hover);
+        .episodes-panel__drama-title {
+            font-size: 1.125rem;
+            font-weight: 600;
             color: var(--text-primary);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .episodes-panel__count {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            margin-top: var(--space-xs);
+        }
+
+        .episodes-panel__list {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-sm);
         }
 
         .ep-item {
             display: flex;
             align-items: center;
-            gap: var(--space-md);
-            padding: var(--space-md);
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
             border-radius: 8px;
             cursor: pointer;
-            margin: var(--space-sm);
+            transition: background .15s;
+            margin-bottom: 2px;
         }
 
         .ep-item:hover {
@@ -165,12 +94,12 @@
         }
 
         .ep-item__thumb {
-            width: 80px;
-            height: 45px;
+            width: 64px;
+            height: 36px;
             border-radius: 4px;
             overflow: hidden;
             flex-shrink: 0;
-            background: var(--bg-secondary);
+            background: var(--bg-card);
         }
 
         .ep-item__thumb img {
@@ -185,7 +114,7 @@
         }
 
         .ep-item__title {
-            font-size: .875rem;
+            font-size: 0.8125rem;
             font-weight: 500;
             white-space: nowrap;
             overflow: hidden;
@@ -197,33 +126,237 @@
         }
 
         .ep-item__meta {
-            font-size: .75rem;
+            font-size: 0.6875rem;
             color: var(--text-muted);
             margin-top: 2px;
         }
 
         .ep-item__lock {
             color: var(--accent-gold);
+            font-size: 0.75rem;
+        }
+
+        /* Right - Video Player Area */
+        .player-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            position: relative;
+        }
+
+        /* Portrait Video Container */
+        .video-container {
+            position: relative;
+            width: auto;
+            height: 100%;
+            max-height: calc(100vh - 60px);
+            aspect-ratio: 9 / 16;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+        }
+
+        .video-container__overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .video-container__overlay-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, .6), transparent);
+        }
+
+        .video-container__overlay-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: linear-gradient(to top, rgba(0, 0, 0, .8), transparent);
+        }
+
+        /* Center Play Button */
+        .center-play {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 72px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(201, 162, 77, 0.9);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all .2s;
+            z-index: 10;
+        }
+
+        .center-play:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            background: var(--accent-gold);
+        }
+
+        .center-play svg {
+            width: 32px;
+            height: 32px;
+            color: #000;
             margin-left: 4px;
         }
 
-        @media(max-width:768px) {
-            .episodes-sidebar {
-                width: 100%;
-            }
-
-            .player-header__title {
-                display: none;
-            }
+        .center-play--hidden {
+            opacity: 0;
+            pointer-events: none;
         }
 
+        /* Video Controls */
+        .video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: var(--space-md);
+            z-index: 20;
+        }
+
+        .video-controls__progress {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, .2);
+            border-radius: 2px;
+            cursor: pointer;
+            margin-bottom: var(--space-md);
+        }
+
+        .video-controls__progress-bar {
+            height: 100%;
+            background: var(--accent-gold);
+            border-radius: 2px;
+            width: 0%;
+            transition: width .1s;
+        }
+
+        .video-controls__buttons {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .video-controls__left,
+        .video-controls__right {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .video-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background .15s;
+        }
+
+        .video-btn:hover {
+            background: rgba(255, 255, 255, .1);
+        }
+
+        .video-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .video-time {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, .7);
+            margin-left: var(--space-sm);
+        }
+
+        .video-quality {
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, .1);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .video-quality:hover {
+            background: rgba(255, 255, 255, .2);
+        }
+
+        /* Header */
+        .player-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--divider);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--space-lg);
+            z-index: 100;
+        }
+
+        .player-header__back {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-right: var(--space-lg);
+        }
+
+        .player-header__back:hover {
+            color: var(--text-primary);
+        }
+
+        .player-header__back svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .player-header__title {
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .player-header__title span {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* Loading */
         .loading-spinner {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border: 3px solid var(--border-subtle);
             border-top-color: var(--accent-gold);
             border-radius: 50%;
@@ -236,15 +369,16 @@
             }
         }
 
+        /* Quality Menu */
         .quality-menu {
             position: absolute;
-            bottom: 60px;
-            right: 80px;
+            bottom: 70px;
+            right: var(--space-md);
             background: rgba(0, 0, 0, .95);
             border-radius: 8px;
             padding: 8px 0;
             display: none;
-            z-index: 100;
+            z-index: 30;
         }
 
         .quality-menu--open {
@@ -252,9 +386,10 @@
         }
 
         .quality-menu__item {
-            padding: 8px 24px;
+            padding: 8px 20px;
             cursor: pointer;
-            font-size: .875rem;
+            font-size: 0.8125rem;
+            color: #fff;
         }
 
         .quality-menu__item:hover {
@@ -264,98 +399,161 @@
         .quality-menu__item--active {
             color: var(--accent-gold);
         }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .episodes-panel {
+                position: fixed;
+                left: 0;
+                top: 60px;
+                bottom: 0;
+                z-index: 50;
+                transform: translateX(-100%);
+                transition: transform .3s;
+            }
+
+            .episodes-panel--open {
+                transform: translateX(0);
+            }
+
+            .video-container {
+                width: 100%;
+                max-width: none;
+                aspect-ratio: 9 / 16;
+            }
+
+            .mobile-ep-toggle {
+                display: flex;
+            }
+        }
+
+        .mobile-ep-toggle {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            left: var(--space-md);
+            width: 48px;
+            height: 48px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            z-index: 40;
+            cursor: pointer;
+        }
+
+        .mobile-ep-toggle svg {
+            width: 24px;
+            height: 24px;
+        }
     </style>
 </head>
 
 <body>
-    <header class="player-header" id="playerHeader">
+    <!-- Header -->
+    <header class="player-header">
         <a href="javascript:history.back()" class="player-header__back">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" width="24" height="24">
+                stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
             </svg>
-            <span class="hide-mobile">Back</span>
+            Back
         </a>
         <div class="player-header__title" id="headerTitle">Loading...</div>
     </header>
 
-    <div class="player-wrapper" id="playerWrapper">
-        <div class="loading-spinner" id="loadingSpinner"></div>
-        <video class="player-video" id="videoPlayer" preload="metadata" style="display:none;"></video>
-        <div class="player-overlay" id="playerOverlay">
-            <div class="player-overlay__top"></div>
-            <div class="player-overlay__bottom"></div>
-        </div>
-        <button class="player-center-play" id="centerPlayBtn" style="display:none;">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path fill-rule="evenodd"
-                    d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
-                    clip-rule="evenodd" />
-            </svg>
-        </button>
-    </div>
+    <div class="player-layout">
+        <!-- Left: Episodes Panel -->
+        <aside class="episodes-panel" id="episodesPanel">
+            <div class="episodes-panel__header">
+                <div class="episodes-panel__title">Now Playing</div>
+                <h2 class="episodes-panel__drama-title" id="dramaTitle">Loading...</h2>
+                <div class="episodes-panel__count" id="episodeCount"></div>
+            </div>
+            <div class="episodes-panel__list" id="episodesList"></div>
+        </aside>
 
-    <div class="player-controls" id="playerControls">
-        <div class="player-progress" id="progressBar">
-            <div class="player-progress__bar" id="progressFill"></div>
-            <div class="player-progress__handle"></div>
-        </div>
-        <div class="player-buttons">
-            <div class="player-buttons__left">
-                <button class="player-btn" id="playPauseBtn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                        fill="currentColor" id="playIcon">
+        <!-- Right: Video Player -->
+        <main class="player-area">
+            <div class="video-container" id="videoContainer">
+                <div class="loading-spinner" id="loadingSpinner"></div>
+                <video id="videoPlayer" preload="metadata" style="display:none;"></video>
+
+                <div class="video-container__overlay">
+                    <div class="video-container__overlay-top"></div>
+                    <div class="video-container__overlay-bottom"></div>
+                </div>
+
+                <button class="center-play" id="centerPlayBtn" style="display:none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path fill-rule="evenodd"
                             d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
                             clip-rule="evenodd" />
-                    </svg></button>
-                <button class="player-btn" id="prevBtn" title="Episode Sebelumnya"><svg
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" width="24" height="24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 16.811c0 .864-.933 1.405-1.683.977l-7.108-4.062a1.125 1.125 0 010-1.953l7.108-4.062A1.125 1.125 0 0121 8.688v8.123zM11.25 16.811c0 .864-.933 1.405-1.683.977l-7.108-4.062a1.125 1.125 0 010-1.953L9.567 7.71a1.125 1.125 0 011.683.977v8.123z" />
-                    </svg></button>
-                <button class="player-btn" id="nextBtn" title="Episode Selanjutnya"><svg
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" width="24" height="24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062A1.125 1.125 0 013 16.81V8.688zM12.75 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062a1.125 1.125 0 01-1.683-.977V8.688z" />
-                    </svg></button>
-                <span class="player-time" id="timeDisplay">0:00 / 0:00</span>
+                    </svg>
+                </button>
+
+                <div class="video-controls" id="videoControls">
+                    <div class="video-controls__progress" id="progressBar">
+                        <div class="video-controls__progress-bar" id="progressFill"></div>
+                    </div>
+                    <div class="video-controls__buttons">
+                        <div class="video-controls__left">
+                            <button class="video-btn" id="playPauseBtn">
+                                <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                    fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <button class="video-btn" id="prevBtn" title="Previous">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M21 16.811c0 .864-.933 1.405-1.683.977l-7.108-4.062a1.125 1.125 0 010-1.953l7.108-4.062A1.125 1.125 0 0121 8.688v8.123zM11.25 16.811c0 .864-.933 1.405-1.683.977l-7.108-4.062a1.125 1.125 0 010-1.953L9.567 7.71a1.125 1.125 0 011.683.977v8.123z" />
+                                </svg>
+                            </button>
+                            <button class="video-btn" id="nextBtn" title="Next">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M3 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062A1.125 1.125 0 013 16.81V8.688zM12.75 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062a1.125 1.125 0 01-1.683-.977V8.688z" />
+                                </svg>
+                            </button>
+                            <span class="video-time" id="timeDisplay">0:00 / 0:00</span>
+                        </div>
+                        <div class="video-controls__right">
+                            <button class="video-quality" id="qualityBtn">720p</button>
+                            <button class="video-btn" id="fullscreenBtn" title="Fullscreen">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quality-menu" id="qualityMenu">
+                    <div class="quality-menu__item" data-quality="1080">1080p</div>
+                    <div class="quality-menu__item quality-menu__item--active" data-quality="720">720p</div>
+                    <div class="quality-menu__item" data-quality="540">540p</div>
+                    <div class="quality-menu__item" data-quality="360">360p</div>
+                </div>
             </div>
-            <div class="player-buttons__right">
-                <button class="player-btn" id="episodesBtn" title="Daftar Episode"><svg
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" width="24" height="24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
-                    </svg></button>
-                <button class="player-quality" id="qualityBtn">720p</button>
-                <button class="player-btn" id="fullscreenBtn" title="Fullscreen"><svg xmlns="http://www.w3.org/2000/svg"
-                        fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24" height="24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
-                    </svg></button>
-            </div>
-        </div>
+        </main>
     </div>
 
-    <div class="quality-menu" id="qualityMenu">
-        <div class="quality-menu__item" data-quality="1080">1080p</div>
-        <div class="quality-menu__item quality-menu__item--active" data-quality="720">720p</div>
-        <div class="quality-menu__item" data-quality="540">540p</div>
-        <div class="quality-menu__item" data-quality="360">360p</div>
-    </div>
-
-    <aside class="episodes-sidebar" id="episodesSidebar">
-        <div class="episodes-sidebar__header">
-            <h3 class="episodes-sidebar__title">Episodes</h3>
-            <button class="episodes-sidebar__close" id="closeSidebar"><svg xmlns="http://www.w3.org/2000/svg"
-                    fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24" height="24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg></button>
-        </div>
-        <div id="episodesList"></div>
-    </aside>
+    <!-- Mobile Episodes Toggle -->
+    <button class="mobile-ep-toggle" id="mobileEpToggle">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
+        </svg>
+    </button>
 
     <script src="js/api.js"></script>
     <script>
@@ -377,7 +575,6 @@
             }
 
             try {
-                // Fetch drama info and episodes
                 const [detail, allEpisodes] = await Promise.all([
                     DramaAPI.getDetail(currentBookId),
                     DramaAPI.getAllEpisodes(currentBookId)
@@ -385,6 +582,10 @@
 
                 dramaInfo = detail;
                 episodes = allEpisodes || [];
+
+                // Update drama info
+                document.getElementById('dramaTitle').textContent = dramaInfo?.bookName || 'Drama';
+                document.getElementById('episodeCount').textContent = `${episodes.length} Episodes`;
 
                 if (episodes.length > 0) {
                     renderEpisodesList();
@@ -405,17 +606,14 @@
             currentEpisodeIndex = index;
             const episode = episodes[index];
 
-            // Update URL without reload
             const url = new URL(window.location);
             url.searchParams.set('ep', index);
             window.history.replaceState({}, '', url);
 
-            // Update header
             const title = dramaInfo?.bookName || 'Drama';
-            document.getElementById('headerTitle').innerHTML = `${title} <span style="color:var(--text-muted)">• ${episode.chapterName}</span>`;
+            document.getElementById('headerTitle').innerHTML = `${title} <span>• ${episode.chapterName}</span>`;
             document.title = `${title} ${episode.chapterName} | XianPlay+`;
 
-            // Get video URL
             const videoUrl = getVideoUrl(episode, currentQuality);
 
             if (!videoUrl) {
@@ -425,10 +623,15 @@
 
             loadVideo(videoUrl, episode.chapterImg);
 
-            // Update active episode in sidebar
             document.querySelectorAll('.ep-item').forEach((el, i) => {
                 el.classList.toggle('ep-item--active', i === index);
             });
+
+            // Scroll to active episode
+            const activeEp = document.querySelector('.ep-item--active');
+            if (activeEp) {
+                activeEp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         }
 
         function loadVideo(url, poster) {
@@ -451,7 +654,7 @@
 
             video.onerror = () => {
                 console.error('Video failed to load');
-                showError('Gagal memuat video. Coba kualitas lain.');
+                showError('Gagal memuat video');
             };
         }
 
@@ -464,11 +667,13 @@
             document.getElementById('episodesList').innerHTML = episodes.map((ep, i) => `
         <div class="ep-item ${i === currentEpisodeIndex ? 'ep-item--active' : ''}" onclick="loadEpisode(${i})">
           <div class="ep-item__thumb">
-            <img src="${ep.chapterImg || ''}" alt="${ep.chapterName}" loading="lazy">
+            <img src="${ep.chapterImg || ''}" alt="${ep.chapterName}" loading="lazy" onerror="this.style.display='none'">
           </div>
           <div class="ep-item__info">
-            <div class="ep-item__title">${ep.chapterName}${ep.isCharge ? '<span class="ep-item__lock">🔒</span>' : ''}</div>
-            <div class="ep-item__meta">${ep.chargeChapter ? 'VIP' : 'Gratis'}</div>
+            <div class="ep-item__title">${ep.chapterName}</div>
+            <div class="ep-item__meta">
+              ${ep.isCharge ? '<span class="ep-item__lock">🔒 VIP</span>' : 'Gratis'}
+            </div>
           </div>
         </div>
       `).join('');
@@ -503,21 +708,20 @@
             const progressFill = document.getElementById('progressFill');
             const timeDisplay = document.getElementById('timeDisplay');
             const fullscreenBtn = document.getElementById('fullscreenBtn');
-            const episodesBtn = document.getElementById('episodesBtn');
-            const sidebar = document.getElementById('episodesSidebar');
-            const closeSidebar = document.getElementById('closeSidebar');
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
             const qualityBtn = document.getElementById('qualityBtn');
             const qualityMenu = document.getElementById('qualityMenu');
+            const mobileEpToggle = document.getElementById('mobileEpToggle');
+            const episodesPanel = document.getElementById('episodesPanel');
 
             function togglePlay() {
                 if (video.paused) {
                     video.play();
-                    centerPlayBtn.classList.add('player-center-play--hidden');
+                    centerPlayBtn.classList.add('center-play--hidden');
                 } else {
                     video.pause();
-                    centerPlayBtn.classList.remove('player-center-play--hidden');
+                    centerPlayBtn.classList.remove('center-play--hidden');
                 }
                 updatePlayIcon();
             }
@@ -556,14 +760,11 @@
 
             fullscreenBtn.addEventListener('click', () => {
                 if (!document.fullscreenElement) {
-                    document.getElementById('playerWrapper').requestFullscreen();
+                    document.getElementById('videoContainer').requestFullscreen();
                 } else {
                     document.exitFullscreen();
                 }
             });
-
-            episodesBtn.addEventListener('click', () => sidebar.classList.toggle('episodes-sidebar--open'));
-            closeSidebar.addEventListener('click', () => sidebar.classList.remove('episodes-sidebar--open'));
 
             prevBtn.addEventListener('click', () => loadEpisode(currentEpisodeIndex - 1));
             nextBtn.addEventListener('click', () => loadEpisode(currentEpisodeIndex + 1));
@@ -571,6 +772,11 @@
             qualityBtn.addEventListener('click', () => qualityMenu.classList.toggle('quality-menu--open'));
             document.querySelectorAll('.quality-menu__item').forEach(el => {
                 el.addEventListener('click', () => changeQuality(parseInt(el.dataset.quality)));
+            });
+
+            // Mobile toggle
+            mobileEpToggle.addEventListener('click', () => {
+                episodesPanel.classList.toggle('episodes-panel--open');
             });
 
             video.addEventListener('ended', () => {
@@ -585,8 +791,9 @@
                     case 'Space': e.preventDefault(); togglePlay(); break;
                     case 'ArrowLeft': video.currentTime -= 10; break;
                     case 'ArrowRight': video.currentTime += 10; break;
+                    case 'ArrowUp': loadEpisode(currentEpisodeIndex - 1); break;
+                    case 'ArrowDown': loadEpisode(currentEpisodeIndex + 1); break;
                     case 'KeyF': fullscreenBtn.click(); break;
-                    case 'Escape': sidebar.classList.remove('episodes-sidebar--open'); qualityMenu.classList.remove('quality-menu--open'); break;
                 }
             });
         });
